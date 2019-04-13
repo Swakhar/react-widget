@@ -8,3 +8,13 @@
   padding-bottom: 15px;
   margin-bottom: 20px;
 }
+
+.authentication {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.authentication div {
+  display: inline-block;
+  margin: 5px
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from "reactstrap";
 
 import LoginModal from "./LoginModal";
+import RegistrationModal from "./RegistrationModal";
 
 export default class App extends Component {
   constructor(props) {
@@ -34,9 +35,14 @@ export default class App extends Component {
         <div className="App">
           <h1>Widget Api</h1>
     
-          <LoginModal buttonLabel="Login" />
           <Container>
             <Row>
+             <Col md="12">
+                <div className="authentication">
+                  <LoginModal buttonLabel="Login" />
+                  <RegistrationModal buttonLabel="Registration" />
+                </div>
+              </Col>
               <Col md="12">
                 {this.state.data.map((item, index) => (
                   <div className="widget-item" key={index}>
