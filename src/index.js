@@ -1,65 +1,17 @@
-import React, {Component} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
-import { Container, Row, Col } from "reactstrap";
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
 
-import LoginModal from "./LoginModal";
+import App from './components/App';
+import reducers from './reducers';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles.css";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: null,
-      error: null,
-    };
-  }
-
-  componentDidMount() {
-    fetch('http://localhost:3000/api/v1/widgets/visible?client_id=d34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332&client_secret=ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => response.json())
-    .then(data => this.setState({ data }))
-    .catch(error => this.setState({
-      error,
-      message: 'Something bad happened ' + error
-  }))
-  }
-
-  render () {
-    if(typeof this.state.data === 'undefined') {
-      return (
-        <div className="App">
-          <h1>Widget Api</h1>
-    
-          <LoginModal buttonLabel="Login" />
-          <Container>
-            <Row>
-              <Col md="12">
-                {this.state.data.map((item, index) => (
-                  <div className="widget-item" key={index}>
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
-                    <strong>{item.kind}</strong>
-                  </div>
-                  )
-                )}
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      );
-    }
-    return 'Error' + this.state.error;
-  }
-}
+const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<Provider store={createStoreWithMiddleware(reducers)}>
+  <App />
+</Provider>, rootElement);
