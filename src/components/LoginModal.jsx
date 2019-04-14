@@ -1,14 +1,59 @@
 import React from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { 
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody, 
+  ModalFooter, 
+  Form, 
+  FormGroup, 
+  Label, 
+  Input 
+} from "reactstrap";
+import axios from 'axios';
 
 class LoginModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal: false
+      modal: false,
+      email: '',
+      password: '',
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
+  }
+
+  handleUserInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({[name]: value});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    let data = JSON.stringify({
+      grant_type: "password",
+      email: this.state.email,
+      password: this.state.password,
+      client_id: "e34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332",
+      client_secret: "ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24",
+  })
+
+    axios.post('http://localhost:3000/oauth/token', data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log(response);
+      console.log(response.data);
+      this.toggle();
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
 
   toggle() {
@@ -28,24 +73,26 @@ class LoginModal extends React.Component {
           toggle={this.toggle}
           className={this.props.className}
         >
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
-          <ModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.toggle}>
-              Do Something
-            </Button>{" "}
-            <Button color="secondary" onClick={this.toggle}>
-              Cancel
-            </Button>
-          </ModalFooter>
+          <Form onSubmit={this.handleSubmit}>
+            <ModalHeader toggle={this.toggle}>Login</ModalHeader>
+            <ModalBody>
+              <FormGroup>
+                <Label for="email">Email</Label>
+                <Input id="email" name="email" type="email" value={this.state.email} onChange={this.handleUserInput} />
+              </FormGroup>
+
+              <FormGroup>
+                <Label for="password">Password</Label>
+                <Input id="password" name="password" type="password" value={this.state.password} onChange={this.handleUserInput} />
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="secondary" onClick={this.toggle}>
+                Cancel
+              </Button>{" "}
+              <Button color="primary" >Login</Button>
+            </ModalFooter>
+          </Form>
         </Modal>
       </div>
     );

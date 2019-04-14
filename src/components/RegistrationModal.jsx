@@ -153,7 +153,7 @@ class RegistrationModal extends React.Component {
           <ModalFooter>
             <Button color="secondary" onClick={this.toggle}>Cancel</Button>{" "}
             <Button color="primary"  disabled={!this.state.formValid}>
-              Send data!
+              Save
             </Button>
           </ModalFooter>
           </Form>

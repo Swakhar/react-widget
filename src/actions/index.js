@@ -8,7 +8,15 @@ export const requestVisibleWidgets = () => ({
 export const receivedVisibleWidgets = json => ({
   type: RECEIVE_WIDGETS,
   json,
-})
+});
+
+export function selectBook (book) {
+  return {
+    type: 'SAVE_LOGIN_CREDENTIAL',
+    payload: book  
+  }
+}
+
 
 export function fetchVisibleWidgets() {
   return function (dispatch) {
