@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from 'react';
 import { 
   Button,
   Modal,
@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import axios from 'axios';
 
-class RegistrationModal extends React.Component {
+class RegistrationModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,7 +42,7 @@ class RegistrationModal extends React.Component {
     let fieldValidationErrors = this.state.formErrors;
     let emailValid = this.state.emailValid;
     let passwordValid = this.state.passwordValid;
-    let usernameValid = this.state.username;
+    let usernameValid = this.state.usernameValid;
 
     switch(fieldName) {
       case 'email':
@@ -93,7 +93,6 @@ class RegistrationModal extends React.Component {
       }
     })
     .then(response => {
-      console.log(response.data.message);
       this.toggle();
     })
     .catch(error => {
@@ -110,7 +109,7 @@ class RegistrationModal extends React.Component {
   render() {
     return (
       <div>
-        <Button color="danger" onClick={this.toggle}>
+        <Button color="success" onClick={this.toggle}>
           {this.props.buttonLabel}
         </Button>
         <Modal

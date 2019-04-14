@@ -1,122 +1,122 @@
 import React, { Component } from 'react';
+import { Container, Row, Col, Button } from "reactstrap";
+
+import LoginModal from "../components/LoginModal";
+import RegistrationModal from "../components/RegistrationModal";
+import CreateWidget from "../components/CreateWidget";
+
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
 import { connect } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser';
 
-import AnnouncementNews from '../components/AnnouncementNews';
-import NewIdea from '../components/NewIdeas';
-import CommentNetworkNews from '../components/CommentNetworkNews';
-import CommentOnIdea from '../components/CommentOnIdea';
+class AppContainer extends Component {
+  constructor(props) {
+    super(props);
 
-class NewsList extends Component {
-  renderList = () => {
-    return this.props.news.map(
-      (news_item, index) => {
-        if(news_item.type === 'announcement') {
-          return (
-            <div className="row announcement" key={index}>
-              <div className="date"> {ReactHtmlParser(news_item.time)} </div>
-              <div className="circle"></div>
-              {news_item.items.map(
-                item => (
-                  (
-                    <AnnouncementNews
-                      {...item}
-                      key={item.id}
-                    />
-                  )
-                )
-              )}
-            </div>
-          )
-        }
-        else if(news_item.type === 'love_from_network') {
-          return (
-            <div className="row new-idea" key={index}>
-              <div className="date"> {ReactHtmlParser(news_item.time)} </div>
-              <div className="circle"></div>
-              <div className="context">
-                <h4>New ideas from your network</h4>
-                <div className="images">
-                  {news_item.items.map(
-                    item => (
-                      (
-                        <NewIdea
-                          {...item}
-                          key={item.id}
-                        />
-                      )
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        }
-        else if(news_item.type === 'comment_from_network') {
-          return (
-            <div className="row comment-network" key={index}>
-              <div className="date"> {ReactHtmlParser(news_item.time)} </div>
-              <div className="circle"></div>
-              <div className="context">
-                <h4>New comments from your network</h4>
-                {news_item.items.map(
-                  item => (
-                    (
-                      <CommentNetworkNews
-                        {...item}
-                        key={item.id}
-                      />
-                    )
-                  )
-                )}
-              </div>
-            </div>
-          )
-        }
-        else if(news_item.type === 'comment_on_own_comment_on_idea') {
-          return (
-            <div className="row comment-network" key={index}>
-              <div className="date"> {ReactHtmlParser(news_item.time)} </div>
-              <div className="circle"></div>
-              <div className="context">
-                {news_item.items.map(
-                  item => (
-                    (
-                      <CommentOnIdea
-                        {...item}
-                        key={item.id}
-                        more={news_item.more}
-                      />
-                    )
-                  )
-                )}
-              </div>
-            </div>
-          )
-        }
-        else {
-          return(
-            <div className="row" key={index}>
-              <div className="date"> {ReactHtmlParser(news_item.time)} </div>
-              <div className="circle"></div>
-            </div>
-          )
-        }
-      },
-    );
+    this.state = {
+      data: null,
+      error: null,
+    };
   }
 
-  render () {
+  componentDidMount() {
+    fetch('http://localhost:3000/api/v1/widgets/visible?client_id=e34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332&client_secret=ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => this.setState({ data }))
+    .catch(error => this.setState({
+      error,
+      message: 'Something bad happened ' + error
+  }))
+  }
+
+  renderLoginModals = () => {
+    if(typeof this.props.loginCredentials.credential === 'undefined') {
+      return (
+        <React.Fragment>
+          <LoginModal buttonLabel="Login" />
+        </React.Fragment>
+      )
+    }
+    return(
+      <React.Fragment>
+        <div>
+          <Link to="/create_widgets/">
+            <Button color="primary">Create New Widget</Button>
+          </Link>
+        </div>
+        <div>
+          <Button color="danger">Logout</Button>
+        </div>
+      </React.Fragment>
+    )
+  }
+
+  renderWidgetLists = () => {
+    if(this.state.data !== null) {
+      return (
+        <Row>
+          <Col md="12">
+            {this.state.data.map((item, index) => (
+              <div className="widget-item" key={index}>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+                <strong>{item.kind}</strong>
+              </div>
+              )
+            )}
+          </Col>
+        </Row>
+      );
+    }
+    return 'Error' + this.state.error;
+  }
+
+  render() {
     return (
-      <div>{this.renderList()}</div>
+      <Router>
+        <Container>
+          <Row>
+          <Link to="/">
+            <Button color="secondary">Home</Button>
+          </Link>
+          </Row>
+        </Container>
+        <Route path="/" exact 
+            render={() => 
+            <Container>
+              <div className="App">
+                <h1>Widget Api</h1>
+                <Row>
+                  <Col md="12">
+                    <div className="authentication">
+                      {this.renderLoginModals()}
+                      <RegistrationModal buttonLabel="Registration" />
+                    </div>
+                  </Col>
+                </Row>
+                {this.renderWidgetLists()}
+              </div>
+            </Container>}
+          />
+        <Route path="/create_widgets/" render={() =>
+          <CreateWidget 
+            accessToken={this.props.loginCredentials.credential ? this.props.loginCredentials.credential.access_token : null}
+            />} 
+          />
+      </Router>
     )
   }
 }
 
 function mapStateToProps(state) {
   return {
-    news: state.news
+    loginCredentials: state.loginCredentials,
   };
 }
 
-export default connect(mapStateToProps)(NewsList);
+export default connect(mapStateToProps)(AppContainer);

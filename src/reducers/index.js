@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import VisibleWidgets from './visible_widgets';
+import LoginCredentials from './login_credentials';
 
 const rootReducer = combineReducers({
-  visibleWidgets: VisibleWidgets,
+  loginCredentials: LoginCredentials,
 });
 
 export default rootReducer;
