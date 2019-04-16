@@ -1,27 +1,36 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { Container, Row, Col, Button } from "reactstrap";
 
 import LoginModal from "../components/LoginModal";
 import RegistrationModal from "../components/RegistrationModal";
 import CreateOrUpdateWidget from "../components/CreateOrUpdateWidget";
 import UsersWidgets from "../components/UsersWidgets";
+import SearchBar from "../components/SearchBar";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { saveLoginCredential } from '../actions';
 
 class AppContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: null,
+      data: [],
       error: null,
     };
   }
 
   componentDidMount() {
-    fetch('http://localhost:3000/api/v1/widgets/visible?client_id=e34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332&client_secret=ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24', {
+    this.fetchVisibleWidgets();
+  }
+
+  fetchVisibleWidgets(term = '') {
+    fetch(`http://localhost:3000/api/v1/widgets/visible?client_id=a4b4c2dfd520d587f2fa2aa20641d7bfd489fff2bd60e62fd3d2700ecbffac22&client_secret=576a063520f7f5c29f9c579b7755f1e0ef4f45f5f380455dd4907b52c2e4e0e7&term=${term}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +41,11 @@ class AppContainer extends Component {
     .catch(error => this.setState({
       error,
       message: 'Something bad happened ' + error
-  }))
+    }))
+  }
+
+  removeLoginCredentials() {
+    this.props.saveLoginCredential(undefined);
   }
 
   renderLoginModals = () => {
@@ -52,14 +65,14 @@ class AppContainer extends Component {
           </Link>
         </div>
         <div>
-          <Button color="danger">Logout</Button>
+          <Button color="danger" onClick={() =>  this.removeLoginCredentials() }>Logout</Button>
         </div>
       </React.Fragment>
     )
   }
 
   renderWidgetLists = () => {
-    if(this.state.data !== null) {
+    if(this.state.data.length) {
       return (
         <Row>
           <Col md="12">
@@ -81,11 +94,13 @@ class AppContainer extends Component {
           </Col>
         </Row>
       );
+    } else {
+      return <div>No visible widgets found</div>
     }
-    return 'Error' + this.state.error;
   }
 
   render() {
+    const videoSearch = _.debounce((term) => {this.fetchVisibleWidgets(term)}, 300);
     return (
       <Router>
         <Container>
@@ -100,6 +115,7 @@ class AppContainer extends Component {
             <Container>
               <div className="App">
                 <h1>Widget Api</h1>
+                <SearchBar onSearchTermChange={videoSearch} />
                 <Row>
                   <Col md="12">
                     <div className="authentication">
@@ -133,4 +149,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(AppContainer);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ saveLoginCredential: saveLoginCredential }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

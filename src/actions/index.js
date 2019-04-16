@@ -5,3 +5,11 @@ export function saveLoginCredential (data) {
     payload: data,
   }
 }
+
+export const SAVE_USERS = 'SAVE_USERS';
+export function saveUsers (data) {
+  return  {
+    type: SAVE_USERS,
+    payload: data,
+  }
+}

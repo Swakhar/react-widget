@@ -19,11 +19,15 @@ class RegistrationModal extends Component {
       modal: false,
       email: '',
       password: '',
+      firstname: '',
+      lastname: '',
       username: '',
-      formErrors: { email: '', password: '', username: '' },
+      formErrors: { email: '', password: '', username: '', firstname: '', lastname: '' },
       emailValid: false,
       passwordValid: false,
       usernameValid: false,
+      firstnameValid: false,
+      lastnameValid: false,
       formValid: false,
     };
 
@@ -43,6 +47,8 @@ class RegistrationModal extends Component {
     let emailValid = this.state.emailValid;
     let passwordValid = this.state.passwordValid;
     let usernameValid = this.state.usernameValid;
+    let firstnameValid = this.state.firstnameValid;
+    let lastnameValid = this.state.lastnameValid;
 
     switch(fieldName) {
       case 'email':
@@ -57,12 +63,22 @@ class RegistrationModal extends Component {
         usernameValid = value.length > 0;
         fieldValidationErrors.username = usernameValid ? '': ' need to be present';
         break;
+      case 'firstname':
+        firstnameValid = value.length > 0;
+        fieldValidationErrors.firstname = firstnameValid ? '': ' need to be present';
+        break;
+      case 'lastname':
+        lastnameValid = value.length > 0;
+        fieldValidationErrors.lastname = lastnameValid ? '': ' need to be present';
+        break;
       default:
         break;
     }
     this.setState({ emailValid: emailValid,
                     passwordValid: passwordValid,
                     usernameValid: usernameValid,
+                    firstnameValid: firstnameValid,
+                    lastnameValid: lastnameValid,
                     formErrors: fieldValidationErrors,
                   }, this.validateForm);
   }
@@ -82,9 +98,11 @@ class RegistrationModal extends Component {
         email: this.state.email,
         password: this.state.password,
         username: this.state.username,
+        firstname: this.state.firstname,
+        lastname: this.state.lastname,
       },
-      client_id: 'e34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332',
-      client_secret: 'ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24'
+      client_id: 'a4b4c2dfd520d587f2fa2aa20641d7bfd489fff2bd60e62fd3d2700ecbffac22',
+      client_secret: '576a063520f7f5c29f9c579b7755f1e0ef4f45f5f380455dd4907b52c2e4e0e7'
   })
 
     axios.post('http://localhost:3000/api/v1/users', data, {
@@ -141,6 +159,18 @@ class RegistrationModal extends Component {
               <Label for="password">Password</Label>
               <Input id="password" name="password"
                type="password" value={this.state.password} onChange={this.handleUserInput} />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="firstname">Firstname</Label>
+              <Input id="firstname" name="firstname"
+                type="text" value={this.state.firstname} onChange={this.handleUserInput} />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="lastname">Lastname</Label>
+              <Input id="lastname" name="lastname"
+                type="text" value={this.state.lastname} onChange={this.handleUserInput} />
             </FormGroup>
 
             <FormGroup>

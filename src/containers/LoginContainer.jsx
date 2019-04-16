@@ -42,8 +42,8 @@ class LoginModalContainer extends Component {
       grant_type: "password",
       email: this.state.email,
       password: this.state.password,
-      client_id: "e34f876cec711c5a4b63c5edc1093651b61cd57f2fc5ed864f559b0df80fd332",
-      client_secret: "ade78ffa9f5f5341a45df49e489aa0cfa0b875c5a903fbd7eaafaff122e3bf24",
+      client_id: "a4b4c2dfd520d587f2fa2aa20641d7bfd489fff2bd60e62fd3d2700ecbffac22",
+      client_secret: "576a063520f7f5c29f9c579b7755f1e0ef4f45f5f380455dd4907b52c2e4e0e7",
   })
 
     axios.post('http://localhost:3000/oauth/token', data, {
