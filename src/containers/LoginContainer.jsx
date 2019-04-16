@@ -52,7 +52,9 @@ class LoginModalContainer extends Component {
       }
     })
     .then(response => {
-      this.props.saveLoginCredential(response.data);
+      let loginResponse = response.data;
+      loginResponse.email = this.state.email;
+      this.props.saveLoginCredential(loginResponse);
     })
     .catch(error => {
       console.log(error);

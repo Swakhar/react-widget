@@ -5,7 +5,7 @@
 
 .widget-item {
   border: 2px solid #333;
-  padding-bottom: 15px;
+  padding: 15px 0;
   margin-bottom: 20px;
 }
 

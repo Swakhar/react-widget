@@ -3,7 +3,8 @@ import { Container, Row, Col, Button } from "reactstrap";
 
 import LoginModal from "../components/LoginModal";
 import RegistrationModal from "../components/RegistrationModal";
-import CreateWidget from "../components/CreateWidget";
+import CreateOrUpdateWidget from "../components/CreateOrUpdateWidget";
+import UsersWidgets from "../components/UsersWidgets";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -39,6 +40,7 @@ class AppContainer extends Component {
       return (
         <React.Fragment>
           <LoginModal buttonLabel="Login" />
+          <RegistrationModal buttonLabel="Registration" />
         </React.Fragment>
       )
     }
@@ -66,6 +68,13 @@ class AppContainer extends Component {
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>
                 <strong>{item.kind}</strong>
+                <div>
+                  {this.props.loginCredentials.credential ? (
+                    <Link to={`/users/${item.user.id}`}>
+                      <Button color="primary">View User</Button>
+                    </Link>
+                  ) : null }
+                </div>
               </div>
               )
             )}
@@ -95,7 +104,6 @@ class AppContainer extends Component {
                   <Col md="12">
                     <div className="authentication">
                       {this.renderLoginModals()}
-                      <RegistrationModal buttonLabel="Registration" />
                     </div>
                   </Col>
                 </Row>
@@ -104,10 +112,16 @@ class AppContainer extends Component {
             </Container>}
           />
         <Route path="/create_widgets/" render={() =>
-          <CreateWidget 
+          <CreateOrUpdateWidget 
             accessToken={this.props.loginCredentials.credential ? this.props.loginCredentials.credential.access_token : null}
             />} 
           />
+        <Route path="/users/:id" render={(props) =>
+          <UsersWidgets
+            {...props}
+            loginCredentials={this.props.loginCredentials.credential}
+          />}
+        />
       </Router>
     )
   }
