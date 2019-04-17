@@ -101,11 +101,11 @@ class RegistrationModal extends Component {
         firstname: this.state.firstname,
         lastname: this.state.lastname,
       },
-      client_id: 'a4b4c2dfd520d587f2fa2aa20641d7bfd489fff2bd60e62fd3d2700ecbffac22',
-      client_secret: '576a063520f7f5c29f9c579b7755f1e0ef4f45f5f380455dd4907b52c2e4e0e7'
+      client_id:  process.env.REACT_APP_CLIENT_ID,
+      client_secret: process.env.REACT_APP_CLIENT_SECRET,
   })
 
-    axios.post('http://localhost:3000/api/v1/users', data, {
+    axios.post(`${process.env.REACT_APP_ROOT_URL}/api/v1/users`, data, {
       headers: {
         'Content-Type': 'application/json'
       }

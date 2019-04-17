@@ -22,7 +22,7 @@ class UsersWidgetsContainer extends Component {
   componentDidMount() {
     if(this.props.loginCredentials) {
       this.fetchAndUpdateUser();
-      fetch(`http://localhost:3000/api/v1/users/${this.props.match.params.id}/widgets`, {
+      fetch(`${process.env.REACT_APP_ROOT_URL}/api/v1/users/${this.props.match.params.id}/widgets`, {
         method: 'GET',
         headers: {
           Authorization: 'Bearer ' + this.props.loginCredentials.access_token,
@@ -42,9 +42,10 @@ class UsersWidgetsContainer extends Component {
       this.props.users.map((user) => {
         if(user.id === parseInt(this.props.match.params.id))
           this.setState({ user })
+          return null;
       })
     } else {
-      fetch(`http://localhost:3000/api/v1/users/${this.props.match.params.id}`, {
+      fetch(`${process.env.REACT_APP_ROOT_URL}/api/v1/users/${this.props.match.params.id}`, {
         method: 'GET',
         headers: {
           Authorization: 'Bearer ' + this.props.loginCredentials.access_token,
@@ -64,7 +65,7 @@ class UsersWidgetsContainer extends Component {
 
   deleteItem(item_id) {
     if(window.confirm('Are you sure you wish to delete this item?')) {
-      return fetch(`http://localhost:3000/api/v1/widgets/${item_id}`, {
+      return fetch(`${process.env.REACT_APP_ROOT_URL}/api/v1/widgets/${item_id}`, {
       method: 'DELETE',
       headers: {
         Authorization: 'Bearer ' + this.props.loginCredentials.access_token,
@@ -78,8 +79,9 @@ class UsersWidgetsContainer extends Component {
         error,
         message: 'Something bad happened ' + error
     }))
+    } else {
+      this.props.history.goBack();
     }
-    return 'No id found';
   }
 
   render() {
@@ -100,7 +102,7 @@ class UsersWidgetsContainer extends Component {
                         <strong>{item.kind}</strong>
                         {this.props.loginCredentials.email === this.state.user.email ? (
                           <div>
-                            <Link to={`/update_widgets/${item.id}`}>Update Widget</Link>
+                            <Link to={`/update_widgets/${item.id}`}>Update Widget</Link> {"     "}
                             <Link 
                               to={`/delete_widget/${item.id}`}
                               onClick={() =>  this.deleteItem(item.id) }

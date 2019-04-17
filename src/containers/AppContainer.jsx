@@ -30,7 +30,7 @@ class AppContainer extends Component {
   }
 
   fetchVisibleWidgets(term = '') {
-    fetch(`http://localhost:3000/api/v1/widgets/visible?client_id=a4b4c2dfd520d587f2fa2aa20641d7bfd489fff2bd60e62fd3d2700ecbffac22&client_secret=576a063520f7f5c29f9c579b7755f1e0ef4f45f5f380455dd4907b52c2e4e0e7&term=${term}`, {
+    fetch(`${process.env.REACT_APP_ROOT_URL}/api/v1/widgets/visible?client_id=${process.env.REACT_APP_CLIENT_ID}&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&term=${term}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

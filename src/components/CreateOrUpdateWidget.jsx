@@ -50,6 +50,7 @@ class CreateOrUpdateWidget extends Component {
           }
         )
       }
+      return null;
     })
   }
 
@@ -115,7 +116,7 @@ class CreateOrUpdateWidget extends Component {
   })
 
     if(this.props.update) {
-      axios.put(`http://localhost:3000/api/v1/widgets/${this.props.match.params.id}`, data, {
+      axios.put(`${process.env.REACT_APP_ROOT_URL}/api/v1/widgets/${this.props.match.params.id}`, data, {
         headers: {
           Authorization: 'Bearer ' + this.props.accessToken,
           'Content-Type': 'application/json'
@@ -129,7 +130,7 @@ class CreateOrUpdateWidget extends Component {
         });
     }
     else {
-      axios.post('http://localhost:3000/api/v1/widgets', data, {
+      axios.post(`${process.env.REACT_APP_ROOT_URL}/api/v1/widgets`, data, {
         headers: {
           Authorization: 'Bearer ' + this.props.accessToken,
           'Content-Type': 'application/json'
